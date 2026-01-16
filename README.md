@@ -1,6 +1,12 @@
-# Toolbox
+<p align="center">
+  <span style="font-size: 0.8em;">
+    <img align="center" src="assets/toolbox.png" style="width:50%"><br>
+  </span>
+</p>
 
-A collection of *almost useless* web tools designed to solve problems you didn't know you had. Because sometimes you need to do something trivial in the most overcomplicated way possible.
+<h4 align="center">
+    <code>Toolbox</code> A collection of *almost useless* web tools designed to solve problems you didn't know you had. Because sometimes you need to do something trivial in the most overcomplicated way possible.<br>
+</h4>
 
 ## Tools
 
