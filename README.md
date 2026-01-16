@@ -1,4 +1,4 @@
-# Content Type Converter
+# Toolbox
 
 A collection of *almost useless* web tools designed to solve problems you didn't know you had. Because sometimes you need to do something trivial in the most overcomplicated way possible.
 
