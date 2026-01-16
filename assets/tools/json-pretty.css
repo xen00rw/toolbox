@@ -1,0 +1,51 @@
+/* Tool-only CSS (scoped). Safe to load after base.css/style.css */
+
+.tool-jsonpre .editor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .tool-jsonpre .editor-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tool-jsonpre .label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+
+.tool-jsonpre .editor {
+  width: 100%;
+  min-height: 320px;
+  background: #0d1117;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  tab-size: 2;
+}
+
+.tool-jsonpre .editor::placeholder {
+  color: #6e7681;
+}
+
+.tool-jsonpre .editor:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.25);
+}
+
+.tool-jsonpre .editor[readonly] {
+  background: #0b1220;
+  color: #c9d1d9;
+}

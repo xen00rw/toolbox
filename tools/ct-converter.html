@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Format Converter | Toolbox</title>
+
+  <!-- Global styles -->
+  <link rel="stylesheet" href="/assets/base.css">
+  <link rel="stylesheet" href="/assets/tools/ct-converter.css">
+
+  <!-- Icons -->
+  <link rel="icon" href="/assets/favicon.ico" sizes="any">
+</head>
+
+<body>
+<div class="container tool-ctconv">
+
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <h1>Universal Data Converter</h1>
+      <div class="subtitle">
+        JSON ⇄ XML ⇄ x-www-form-urlencoded — fast and clean.
+      </div>
+    </div>
+
+    <!-- Same back button style -->
+    <a href="/" class="badge">← Back to home</a>
+  </div>
+
+  <!-- Main panel -->
+  <div class="panel">
+
+    <!-- Controls -->
+    <div class="controls">
+      <select id="fromFormat" onchange="syncHeaders()">
+        <option value="json">JSON</option>
+        <option value="xml">XML</option>
+        <option value="form">x-www-form-urlencoded</option>
+      </select>
+
+      <select id="toFormat" onchange="syncHeaders()">
+        <option value="json">JSON</option>
+        <option value="xml">XML</option>
+        <option value="form">x-www-form-urlencoded</option>
+      </select>
+
+      <button onclick="convert()">Convert</button>
+      <button class="ghost" onclick="swapFormats()">Swap</button>
+      <button class="ghost" onclick="clearAll()">Clear</button>
+    </div>
+
+    <div class="sep"></div>
+
+    <!-- Editors -->
+    <div class="editor-grid">
+
+      <!-- INPUT -->
+      <div>
+        <div class="label-row">
+          <span class="label">Input Headers</span>
+          <button class="ghost" onclick="copyField('input')">Copy</button>
+        </div>
+        <input id="inputHeader" class="headerField tool-field" readonly />
+
+        <div class="label">Input Body</div>
+        <textarea
+          id="input"
+          class="editor tool-field"
+          spellcheck="false"
+        ></textarea>
+      </div>
+
+      <!-- OUTPUT -->
+      <div>
+        <div class="label-row">
+          <span class="label">Output Headers</span>
+          <button class="ghost" onclick="copyField('output')">Copy</button>
+        </div>
+        <input id="outputHeader" class="headerField tool-field" readonly />
+
+        <div class="label">Output Body</div>
+        <textarea
+          id="output"
+          class="editor tool-field"
+          readonly
+          spellcheck="false"
+        ></textarea>
+      </div>
+
+    </div>
+
+    <!-- Error -->
+    <div id="error" class="error"></div>
+
+    <!-- Footer (same layout as index.html) -->
+    <div class="footer">
+      <div class="small">
+        Tip: keep all your tools under <span class="kbd">./tools/</span> and just update the
+        <span class="kbd">href</span>.
+      </div>
+      <div class="small">
+        Tools: <span id="count">3</span>
+      </div>
+    </div>
+
+    <!-- Visible banner (same as index.html) -->
+    <div class="gpt-banner">
+      <strong>Yes!</strong> It’s fully GPT — no drama.<br>
+      Let’s make these tasks easier.
+    </div>
+
+  </div>
+</div>
+
+<script>
+function ct(format) {
+  if (format === "json") return "application/json";
+  if (format === "xml") return "application/xml";
+  if (format === "form") return "application/x-www-form-urlencoded";
+  return "text/plain";
+}
+
+function syncHeaders() {
+  document.getElementById("inputHeader").value =
+    "Content-Type: " + ct(fromFormat.value);
+  document.getElementById("outputHeader").value =
+    "Content-Type: " + ct(toFormat.value);
+}
+
+function convert() {
+  const input = document.getElementById("input").value.trim();
+  const output = document.getElementById("output");
+  const error = document.getElementById("error");
+
+  error.textContent = "";
+  output.value = "";
+
+  if (!input) return;
+
+  try {
+    let obj;
+
+    if (fromFormat.value === "json") obj = JSON.parse(input);
+    else if (fromFormat.value === "xml") obj = xmlToObj(input);
+    else obj = formToObj(input);
+
+    if (toFormat.value === "json") output.value = JSON.stringify(obj, null, 2);
+    else if (toFormat.value === "xml") output.value = objToXml(obj);
+    else output.value = objToForm(obj);
+
+  } catch (e) {
+    error.textContent = "Conversion error:\n" + e.message;
+  }
+}
+
+function swapFormats() {
+  [fromFormat.value, toFormat.value] = [toFormat.value, fromFormat.value];
+  syncHeaders();
+}
+
+function clearAll() {
+  input.value = "";
+  output.value = "";
+  error.textContent = "";
+}
+
+function copyField(id) {
+  const el = document.getElementById(id);
+  if (!el || !el.value) return;
+
+  const normalized = el.value.replace(/[\r\n ]+/g, "");
+  navigator.clipboard.writeText(normalized);
+}
+
+/* -------- Helpers -------- */
+
+function formToObj(text) {
+  return Object.fromEntries(new URLSearchParams(text));
+}
+
+function objToForm(obj) {
+  const p = new URLSearchParams();
+  for (const k in obj) p.append(k, obj[k]);
+  return p.toString();
+}
+
+function xmlToObj(text) {
+  const d = new DOMParser().parseFromString(text, "application/xml");
+  if (d.querySelector("parsererror")) throw Error("Invalid XML");
+  return nodeToObj(d.documentElement);
+}
+
+function nodeToObj(n) {
+  const o = {};
+  for (const c of n.children) {
+    o[c.nodeName] = c.children.length ? nodeToObj(c) : c.textContent;
+  }
+  return o;
+}
+
+function objToXml(obj) {
+  let x = "<root>";
+  for (const k in obj) x += `<${k}>${escapeXml(obj[k])}</${k}>`;
+  return x + "</root>";
+}
+
+function escapeXml(v) {
+  return String(v)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/* Init */
+syncHeaders();
+</script>
+
+</body>
+</html>

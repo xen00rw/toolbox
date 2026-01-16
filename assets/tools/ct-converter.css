@@ -1,0 +1,86 @@
+/* Tool-only overrides: does NOT touch global textarea/input styles */
+.tool-ctconv .editor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .tool-ctconv .editor-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tool-ctconv .label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.tool-ctconv .label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.2px;
+}
+
+/* Unified field look (inputs + editors) */
+.tool-ctconv .tool-field {
+  background: linear-gradient(180deg, #0d1117 0%, #0b1220 100%);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Header inputs */
+.tool-ctconv .headerField {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+/* Editors (both must be identical) */
+.tool-ctconv .editor {
+  width: 100%;
+  min-height: 360px;
+  padding: 14px;
+  resize: vertical;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  tab-size: 2;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+/* Placeholder */
+.tool-ctconv .editor::placeholder {
+  color: #6e7681;
+}
+
+/* Focus: apply only when focused */
+.tool-ctconv .tool-field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.25);
+}
+
+/* IMPORTANT: readonly must NOT change appearance */
+.tool-ctconv .tool-field[readonly] {
+  background: linear-gradient(180deg, #0d1117 0%, #0b1220 100%);
+  border-color: var(--border);
+  box-shadow: none;
+  color: var(--text);
+  cursor: default;
+}
+
+/* Error area matches aesthetic */
+.tool-ctconv .error {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+}

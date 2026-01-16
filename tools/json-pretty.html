@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSON Pretty | Toolbox</title>
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#0e1117" />
+    <meta name="background-color" content="#0e1117" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/assets/base.css" />
+    <link rel="stylesheet" href="/assets/tools/json-pretty.css" />
+
+    <!-- Icons -->
+    <link rel="icon" href="/assets/favicon.ico" sizes="any" />
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <div>
+          <h1>JSON Pretty</h1>
+          <div class="subtitle">
+            Validate, prettify and minify JSON — fast and clean.
+          </div>
+        </div>
+        <a href="/" class="badge"> ← Back to home </a>
+      </div>
+
+      <!-- Panel -->
+      <div class="panel">
+        <!-- Controls -->
+        <div class="controls">
+          <button onclick="pretty()">Pretty</button>
+          <button class="ghost" onclick="minify()">Minify</button>
+          <button class="ghost" onclick="copy()">Copy</button>
+          <button class="ghost" onclick="clearAll()">Clear</button>
+        </div>
+
+        <div class="sep"></div>
+
+        <!-- Editors -->
+        <div class="tool-jsonpre">
+          <div class="editor-grid">
+            <div>
+              <div class="label">Input JSON</div>
+              <textarea
+                class="editor"
+                id="input"
+                placeholder='{"example": true}'
+              ></textarea>
+            </div>
+
+            <div>
+              <div class="label">Output</div>
+              <textarea class="editor" id="output" readonly></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div id="error" class="error"></div>
+
+        <!-- Banner -->
+        <div class="gpt-banner">
+          <strong>Yes!</strong> It’s fully GPT — no drama.<br />
+          Let’s make these tasks easier.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function pretty() {
+        transform(true);
+      }
+
+      function minify() {
+        transform(false);
+      }
+
+      function transform(pretty) {
+        const input = document.getElementById("input").value.trim();
+        const output = document.getElementById("output");
+        const error = document.getElementById("error");
+
+        error.textContent = "";
+        output.value = "";
+
+        if (!input) return;
+
+        try {
+          const obj = JSON.parse(input);
+          output.value = pretty
+            ? JSON.stringify(obj, null, 2)
+            : JSON.stringify(obj);
+        } catch (e) {
+          error.textContent = "Invalid JSON:\n" + e.message;
+        }
+      }
+
+      function copy() {
+        const out = document.getElementById("output").value;
+        if (out) navigator.clipboard.writeText(out);
+      }
+
+      function clearAll() {
+        document.getElementById("input").value = "";
+        document.getElementById("output").value = "";
+        document.getElementById("error").textContent = "";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Utility Belt</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/.assets/base.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/.assets/favicon.ico" sizes="any" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/.assets/favicon-16x16.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/.assets/favicon-32x32.png"
+    />
+
+    <!-- Android / PWA -->
+    <link rel="manifest" href="/.assets/site.webmanifest" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/.assets/android-chrome-192x192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="/.assets/android-chrome-512x512.png"/>
+    
+
+    <!-- iOS -->
+    <link rel="apple-touch-icon" href="/.assets/apple-touch-icon.png" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <div>
+          <h1>Tool Box</h1>
+          <div class="subtitle">
+            A fast toolbox for quick, practical tasks. Pick a tool, paste data,
+            get output — no drama.
+          </div>
+        </div>
+        <div class="badge">
+          <span class="kbd">⌘</span><span class="kbd">K</span>
+          <span>Quick focus search</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="controls">
+          <input
+            id="q"
+            type="text"
+            placeholder="Search tools (json, xml, form...)"
+            style="flex: 1; min-width: 240px"
+          />
+          <button class="ghost" id="reset">Reset</button>
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="grid" id="grid">
+          <a
+            class="card"
+            href="./tools/ct-converter.html"
+            data-keywords="json xml form urlencoded x-www-form-urlencoded converter transform content-type headers"
+          >
+            <div class="title">Format Converter</div>
+            <div class="desc">
+              JSON ⇄ XML ⇄ x-www-form-urlencoded. Clean headers and
+              ready-to-copy output.
+            </div>
+          </a>
+
+          <a
+            class="card"
+            href="./tools/json-pretty.html"
+            data-keywords="json pretty minify validate formatter lint"
+          >
+            <div class="title">JSON Pretty / Minify</div>
+            <div class="desc">
+              Validate JSON, pretty print, minify, and sort keys for clean
+              diffs.
+            </div>
+          </a>
+        </div>
+
+        <div class="footer">
+          <div class="small">
+            Tip: keep all your tools under <span class="kbd">./tools/</span> and
+            just update the card <span class="kbd">href</span>.
+          </div>
+          <div class="small">Matches: <span id="count">0</span></div>
+        </div>
+
+        <div class="gpt-banner">
+          <strong>Yes!</strong> It’s fully GPT — no drama.<br />
+          Let’s make these tasks easier.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const q = document.getElementById("q");
+      const reset = document.getElementById("reset");
+      const grid = document.getElementById("grid");
+      const count = document.getElementById("count");
+
+      const cards = Array.from(grid.querySelectorAll(".card"));
+
+      function normalize(s) {
+        return (s || "").toLowerCase().trim();
+      }
+
+      function applyFilters() {
+        const term = normalize(q.value);
+        let visible = 0;
+
+        for (const a of cards) {
+          const kw = normalize(a.getAttribute("data-keywords"));
+          const title = normalize(a.querySelector(".title")?.textContent);
+          const desc = normalize(a.querySelector(".desc")?.textContent);
+
+          const termOk =
+            !term ||
+            kw.includes(term) ||
+            title.includes(term) ||
+            desc.includes(term);
+
+          a.style.display = termOk ? "" : "none";
+          if (termOk) visible++;
+        }
+
+        count.textContent = String(visible);
+      }
+
+      reset.addEventListener("click", () => {
+        q.value = "";
+        applyFilters();
+        q.focus();
+      });
+
+      q.addEventListener("input", applyFilters);
+
+      // Cmd/Ctrl+K focuses search
+      document.addEventListener("keydown", (e) => {
+        const isMac = navigator.platform.toLowerCase().includes("mac");
+        const mod = isMac ? e.metaKey : e.ctrlKey;
+        if (mod && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          q.focus();
+          q.select();
+        }
+      });
+
+      applyFilters();
+    </script>
+  </body>
+</html>
